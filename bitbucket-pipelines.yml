@@ -1,0 +1,49 @@
+pipelines:
+  branches:
+    master:
+      - step:
+          name: Update Linux Packages on Production Server
+          script:
+            - ssh -i $PRODUCTION_SERVER 
+            - sudo dnf -y upgrade
+      - step:
+          name: Build and Install Dependencies
+          script:
+            - cd /home/nesttest
+            - pnpm install 
+            - pnpm build
+      - step:
+          name: Run Unit and Integration Tests
+          script:
+            - pnpm test:unit
+            - pnpm test:integration
+      - step:
+          name: Deploy Containers
+          script:
+            - sudo chmod +x setup-compose-env.sh && sh -e setup-compose-env.sh
+            - docker-compose down
+            - docker-compose up -d
+
+    development:
+      - step:
+          name: Update Linux Packages on Dev Server
+          script:
+            - ssh -i $DEV_SERVER 
+            - sudo dnf -y upgrade
+      - step:
+          name: Build and Install Dependencies
+          script:
+            - cd /home/nesttest
+            - pnpm install 
+            - pnpm build
+      - step:
+          name: Run Unit and Integration Tests
+          script:
+            - pnpm test:unit
+            - pnpm test:integration
+      - step:
+          name: Deploy Containers
+          script:
+            - sudo chmod +x setup-compose-env-dev.sh && sh -e setup-compose-env-dev.sh
+            - docker-compose -f docker-compose.dev up down
+            - docker-compose -f docker-compose.dev up -d

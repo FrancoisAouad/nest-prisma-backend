@@ -1,0 +1,66 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 String    @id @default(uuid())
+  username           String    @unique
+  firstName          String
+  lastName           String
+  product            Product[]
+  role               String
+  email              String    @unique
+  verified           Boolean
+  resetPasswordToken String
+  emailToken         String
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+model Credential {
+  id       String @id @default(uuid())
+  userId   String @unique
+  password String
+}
+
+model Product {
+  id                String            @id @default(uuid())
+  userId            String
+  user              User              @relation(fields: [userId], references: [id])
+  description       String
+  name              String            @unique
+  price             String
+  weight            String
+  currency          Currency
+  image             String            @default("http://firebase/img.png")
+  productCategoryId String?
+  category          ProductCategory[]
+}
+
+model ProductCategory {
+  id         String   @id @default(uuid())
+  categoryId String
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
+}
+
+model Category {
+  id              String            @id @default(uuid())
+  name            String            @unique
+  description     String
+  productCategory ProductCategory[]
+}
+
+enum Currency {
+  usd
+  eur
+  yen
+  lbp
+  trl
+}

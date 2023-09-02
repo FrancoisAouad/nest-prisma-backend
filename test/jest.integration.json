@@ -1,0 +1,10 @@
+{
+  "preset": "ts-jest",
+  "testEnvironment": "node",
+  "globalSetup": "<rootDir>/integration/setup.ts",
+  "globalTeardown": "<rootDir>/integration/teardown.ts",
+  "modulePathIgnorePatterns": ["<rootDir>/../dist/"],
+  "testMatch": ["<rootDir>/integration/**/*.test.ts"],
+  "coverageDirectory": "<rootDir>/../coverage",
+  "testTimeout": 60000
+  }

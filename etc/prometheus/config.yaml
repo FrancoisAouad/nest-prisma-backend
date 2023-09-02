@@ -1,0 +1,11 @@
+global:
+    scrape_interval: 5s
+scrape_configs:
+    #localhost should be hostname in case we are using prometheus in a container
+    - job_name: 'api'
+      metrics_path: /metrics
+      static_configs:
+          - targets: ['api:8021']
+    - job_name: 'cAdvisor'
+      static_configs:
+          - targets: ['cAdvisor:8080']
